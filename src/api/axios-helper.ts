@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
-  "http://https://orca-app-s8tpj.ondigitalocean.app";
+  "https://orca-app-s8tpj.ondigitalocean.app";
 
 const axiosInstance = axios.create({
   baseURL: `${API_BASE_URL}/api`,
