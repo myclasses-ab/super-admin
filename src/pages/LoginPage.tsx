@@ -37,7 +37,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-slate-50">
       {/* Left Side - Image */}
-      Hiiiiiii
       <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 items-center justify-center p-8">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
