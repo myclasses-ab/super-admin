@@ -11,6 +11,9 @@ import LeadsPage from '@/pages/LeadsPage';
 import DistributePage from '@/pages/DistributePage';
 import InstitutesPage from '@/pages/InstitutesPage';
 import CoursesPage from '@/pages/CoursesPage';
+import CreditsPage from '@/pages/CreditsPage';
+import LeadRequestsPage from '@/pages/LeadRequestsPage';
+import FeaturedPurchasesPage from '@/pages/FeaturedPurchasesPage';
 import AnalyticsPage from '@/pages/AnalyticsPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -76,6 +79,9 @@ function AppRoutes() {
         <Route path="distribute" element={<PageTransition><DistributePage /></PageTransition>} />
         <Route path="institutes" element={<PageTransition><InstitutesPage /></PageTransition>} />
         <Route path="courses" element={<PageTransition><CoursesPage /></PageTransition>} />
+        <Route path="credits" element={<PageTransition><CreditsPage /></PageTransition>} />
+        <Route path="lead-requests" element={<PageTransition><LeadRequestsPage /></PageTransition>} />
+        <Route path="featured-purchases" element={<PageTransition><FeaturedPurchasesPage /></PageTransition>} />
         <Route path="analytics" element={<PageTransition><AnalyticsPage /></PageTransition>} />
       </Route>
     </Routes>

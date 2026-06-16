@@ -11,6 +11,9 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
+  Coins,
+  ClipboardList,
+  Sparkles,
 } from 'lucide-react';
 
 const navItems = [
@@ -19,6 +22,9 @@ const navItems = [
   { label: 'Distribute', icon: Send, path: '/distribute' },
   { label: 'Institutes', icon: Building2, path: '/institutes' },
   { label: 'Courses', icon: BookOpen, path: '/courses' },
+  { label: 'Credits', icon: Coins, path: '/credits' },
+  { label: 'Lead Requests', icon: ClipboardList, path: '/lead-requests' },
+  { label: 'Featured', icon: Sparkles, path: '/featured-purchases' },
   { label: 'Analytics', icon: BarChart3, path: '/analytics' },
 ];
 

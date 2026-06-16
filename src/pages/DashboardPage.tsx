@@ -4,8 +4,8 @@ import { useAdminStore } from '@/store/adminStore';
 import StatCard from '@/components/shared/StatCard';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import EmptyState from '@/components/shared/EmptyState';
-import { inquiryApi, leadDistributionApi, institutesApi } from '@/api';
-import type { Inquiry, LeadDistribution, Institute } from '@/types';
+import { inquiryApi, leadDistributionApi, institutesApi, creditsApi, leadRequestsApi, featuredPurchasesApi, creditTopUpsApi } from '@/api';
+import type { Inquiry, LeadDistribution, Institute, InstituteCredit, LeadRequest, FeaturedPurchase, CreditTopUpRequest } from '@/types';
 import { toast } from 'sonner';
 import {
   Users,
@@ -15,6 +15,10 @@ import {
   TrendingUp,
   UserCheck,
   ArrowRight,
+  Coins,
+  ClipboardList,
+  Sparkles,
+  IndianRupee,
 } from 'lucide-react';
 import {
   LineChart,
@@ -40,19 +44,43 @@ export default function DashboardPage() {
   const [leads, setLeads] = useState<Inquiry[]>([]);
   const [distributions, setDistributions] = useState<LeadDistribution[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
+  const [creditBalances, setCreditBalances] = useState<InstituteCredit[]>([]);
+  const [leadRequests, setLeadRequests] = useState<LeadRequest[]>([]);
+  const [featuredPurchases, setFeaturedPurchases] = useState<FeaturedPurchase[]>([]);
+  const [creditTopUps, setCreditTopUps] = useState<CreditTopUpRequest[]>([]);
 
   useEffect(() => {
     const load = async () => {
       setIsLoading(true);
       try {
-        const [l, d, i] = await Promise.all([
+        const [l, d, i, lr, fp, ctu] = await Promise.all([
           inquiryApi.getAll(),
           leadDistributionApi.getAll(),
           institutesApi.getAll(),
+          leadRequestsApi.getAll().catch(() => []),
+          featuredPurchasesApi.getAll().catch(() => []),
+          creditTopUpsApi.getAll().catch(() => []),
         ]);
         setLeads(l ?? []);
         setDistributions(d ?? []);
         setInstitutes(i ?? []);
+        setLeadRequests(lr ?? []);
+        setFeaturedPurchases(fp ?? []);
+        setCreditTopUps(ctu ?? []);
+
+        // Fetch credit balances
+        const balances: InstituteCredit[] = [];
+        await Promise.all(
+          (i ?? []).map(async (inst: Institute) => {
+            try {
+              const credit = await creditsApi.getBalance(inst.identifier);
+              balances.push(credit);
+            } catch {
+              // no credit record
+            }
+          })
+        );
+        setCreditBalances(balances);
       } catch (err) {
         console.error('Dashboard load error', err);
         toast.error('Failed to load dashboard data');
@@ -144,6 +172,30 @@ export default function DashboardPage() {
         <StatCard title="Leads Sent" value={sentLeads} icon={Send} onClick={() => navigate('/distribute')} />
         <StatCard title="Total Institutes" value={institutes.length} icon={Building2} onClick={() => navigate('/institutes')} />
         <StatCard title="Active Students" value={totalStudents} icon={UserCheck} />
+        <StatCard
+          title="Total Credits"
+          value={creditBalances.reduce((sum, c) => sum + c.balance, 0)}
+          icon={Coins}
+          onClick={() => navigate('/credits')}
+        />
+        <StatCard
+          title="Pending Lead Requests"
+          value={leadRequests.filter((r) => r.status === 'PENDING').length}
+          icon={ClipboardList}
+          onClick={() => navigate('/lead-requests')}
+        />
+        <StatCard
+          title="Active Featured"
+          value={featuredPurchases.filter((p) => p.status === 'ACTIVE').length}
+          icon={Sparkles}
+          onClick={() => navigate('/featured-purchases')}
+        />
+        <StatCard
+          title="Pending Top-Ups"
+          value={creditTopUps.filter((t) => t.status === 'PENDING').length}
+          icon={IndianRupee}
+          onClick={() => navigate('/credits')}
+        />
       </div>
 
       {/* Charts Row 1 */}
