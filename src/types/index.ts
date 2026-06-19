@@ -185,14 +185,11 @@ export interface Faculty {
   instituteIdentifier: string;
   name: string;
   designation: string;
-  bio: string;
   qualification: string;
   experienceYears: number;
-  specialization: string;
   email: string;
   phone: string;
   photoUrl: string;
-  isActive: boolean;
   createdAt: string;
 }
 
