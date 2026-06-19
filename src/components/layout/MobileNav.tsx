@@ -4,8 +4,6 @@ import { useAdminStore } from '@/store/adminStore';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
-  Users,
-  Send,
   Building2,
   BookOpen,
   BarChart3,
@@ -15,8 +13,6 @@ import {
 
 const mobileItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
-  { label: 'Leads', icon: Users, path: '/leads' },
-  { label: 'Distribute', icon: Send, path: '/distribute' },
   { label: 'Institutes', icon: Building2, path: '/institutes' },
   { label: 'More', icon: Menu, path: null as string | null },
 ];
@@ -110,8 +106,6 @@ export default function MobileNav() {
             <nav className="p-2 space-y-0.5">
               {[
                 { label: 'Dashboard', path: '/' },
-                { label: 'All Leads', path: '/leads' },
-                { label: 'Distribute', path: '/distribute' },
                 { label: 'Institutes', path: '/institutes' },
                 { label: 'Courses', path: '/courses' },
                 { label: 'Analytics', path: '/analytics' },

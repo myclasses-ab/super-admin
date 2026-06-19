@@ -3,8 +3,6 @@ import { useAdminStore } from '@/store/adminStore';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
-  Users,
-  Send,
   Building2,
   BookOpen,
   BarChart3,
@@ -12,18 +10,14 @@ import {
   ChevronRight,
   ShieldCheck,
   Coins,
-  ClipboardList,
   Sparkles,
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
-  { label: 'All Leads', icon: Users, path: '/leads' },
-  { label: 'Distribute', icon: Send, path: '/distribute' },
   { label: 'Institutes', icon: Building2, path: '/institutes' },
   { label: 'Courses', icon: BookOpen, path: '/courses' },
   { label: 'Credits', icon: Coins, path: '/credits' },
-  { label: 'Lead Requests', icon: ClipboardList, path: '/lead-requests' },
   { label: 'Featured', icon: Sparkles, path: '/featured-purchases' },
   { label: 'Analytics', icon: BarChart3, path: '/analytics' },
 ];

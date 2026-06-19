@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { User, Institute, InstituteCourse, City, ExamType, LeadFilters, InstituteFilters, SubscriptionTier } from '@/types';
+import type { User, Institute, InstituteCourse, City, ExamType, InstituteFilters, SubscriptionTier } from '@/types';
 
 interface AdminState {
   // Auth
@@ -12,17 +12,6 @@ interface AdminState {
   setIsAuthenticated: (val: boolean) => void;
   setIsLoading: (val: boolean) => void;
   logout: () => void;
-
-  // Leads
-  leads: User[];
-  leadFilters: LeadFilters;
-  selectedLeadIds: string[];
-  setLeads: (leads: User[]) => void;
-  setLeadFilters: (filters: LeadFilters) => void;
-  setSelectedLeadIds: (ids: string[]) => void;
-  toggleLeadSelection: (id: string) => void;
-  selectAllLeads: (ids: string[]) => void;
-  clearLeadSelection: () => void;
 
   // Institutes
   institutes: Institute[];
@@ -62,22 +51,6 @@ export const useAdminStore = create<AdminState>((set) => ({
     set({ user: null, token: null, isAuthenticated: false });
     window.location.href = '/login';
   },
-
-  // Leads
-  leads: [],
-  leadFilters: {},
-  selectedLeadIds: [],
-  setLeads: (leads) => set({ leads }),
-  setLeadFilters: (filters) => set({ leadFilters: filters }),
-  setSelectedLeadIds: (ids) => set({ selectedLeadIds: ids }),
-  toggleLeadSelection: (id) =>
-    set((state) => ({
-      selectedLeadIds: state.selectedLeadIds.includes(id)
-        ? state.selectedLeadIds.filter((x) => x !== id)
-        : [...state.selectedLeadIds, id],
-    })),
-  selectAllLeads: (ids) => set({ selectedLeadIds: ids }),
-  clearLeadSelection: () => set({ selectedLeadIds: [] }),
 
   // Institutes
   institutes: [],

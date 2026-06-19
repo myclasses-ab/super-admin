@@ -70,22 +70,6 @@ export interface Inquiry {
   updatedAt: string;
 }
 
-export interface LeadDistribution {
-  identifier: string;
-  userIdentifier: string;
-  userName: string | null;
-  userPhone: string | null;
-  instituteIdentifier: string;
-  instituteName: string | null;
-  distributedBy: string | null;
-  distributedAt: string | null;
-  status: LeadDistributionStatus;
-  notes: string | null;
-  instituteNotes: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface Institute {
   identifier: string;
   name: string;
@@ -222,12 +206,6 @@ export interface Result {
   photoUrl: string;
   isActive: boolean;
   createdAt: string;
-}
-
-export interface LeadFilters {
-  cityIdentifier?: string;
-  examTypeIdentifier?: string;
-  search?: string;
 }
 
 export interface InstituteFilters {
@@ -368,14 +346,6 @@ export enum VoteType {
   NOT_HELPFUL = 'NOT_HELPFUL',
 }
 
-export enum LeadDistributionStatus {
-  PENDING = 'PENDING',
-  VIEWED = 'VIEWED',
-  CONTACTED = 'CONTACTED',
-  CONVERTED = 'CONVERTED',
-  EXPIRED = 'EXPIRED',
-}
-
 export interface InstituteCredit {
   identifier: string;
   instituteIdentifier: string;
@@ -393,19 +363,6 @@ export interface CreditTransaction {
   description: string;
   referenceIdentifier: string;
   createdAt: string;
-}
-
-export interface LeadRequest {
-  identifier: string;
-  instituteIdentifier: string;
-  examTypeIdentifier: string;
-  quantity: number;
-  totalCost: number;
-  status: string;
-  notes: string;
-  adminNotes: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface FeaturedPurchase {

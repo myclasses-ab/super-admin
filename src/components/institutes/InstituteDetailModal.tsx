@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { X, Star, Users, MapPin, Globe, Phone, Mail, Trash2, BookOpen, MapPinned, GraduationCap, Trophy, MessageSquare } from 'lucide-react';
-import type { Institute, InstituteCourse, LeadDistribution } from '@/types';
-import { coursesApi, leadDistributionApi } from '@/api';
-import { formatDate } from '@/lib/utils';
+import { X, Star, Users, MapPin, Globe, Phone, Mail, Trash2, BookOpen, MapPinned } from 'lucide-react';
+import type { Institute, InstituteCourse } from '@/types';
+import { coursesApi } from '@/api';
+
 
 interface InstituteDetailModalProps {
   institute: Institute | null;
@@ -11,9 +11,8 @@ interface InstituteDetailModalProps {
 }
 
 export default function InstituteDetailModal({ institute, onClose, onDelete }: InstituteDetailModalProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'branches' | 'faculty' | 'results' | 'reviews' | 'leads'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'courses'>('overview');
   const [courses, setCourses] = useState<InstituteCourse[]>([]);
-  const [leads, setLeads] = useState<LeadDistribution[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,12 +21,8 @@ export default function InstituteDetailModal({ institute, onClose, onDelete }: I
     const load = async () => {
       setLoading(true);
       try {
-        const [c, l] = await Promise.all([
-          coursesApi.getByInstitute(institute.identifier),
-          leadDistributionApi.getByInstitute(institute.identifier),
-        ]);
+        const c = await coursesApi.getByInstitute(institute.identifier);
         setCourses(c ?? []);
-        setLeads(l ?? []);
       } catch {
         // ignore
       } finally {
@@ -46,7 +41,6 @@ export default function InstituteDetailModal({ institute, onClose, onDelete }: I
   const tabs = [
     { key: 'overview' as const, label: 'Overview', icon: MapPinned },
     { key: 'courses' as const, label: 'Courses', icon: BookOpen },
-    { key: 'leads' as const, label: 'Leads', icon: Users },
   ];
 
   return (
@@ -119,7 +113,7 @@ export default function InstituteDetailModal({ institute, onClose, onDelete }: I
                   <Badge color="blue">{institute.subscriptionTier}</Badge>
                 </div>
               </div>
-            ) : activeTab === 'courses' ? (
+            ) : (
               <div className="space-y-2">
                 {courses.length === 0 ? (
                   <p className="text-sm text-slate-500">No courses</p>
@@ -128,22 +122,6 @@ export default function InstituteDetailModal({ institute, onClose, onDelete }: I
                     <div key={c.identifier} className="bg-slate-50 rounded-xl p-3">
                       <p className="text-sm font-medium text-slate-900">{c.courseName}</p>
                       <p className="text-xs text-slate-500">Fee: ₹{c.feeMin} - ₹{c.feeMax} • {c.durationMonths} months</p>
-                    </div>
-                  ))
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {leads.length === 0 ? (
-                  <p className="text-sm text-slate-500">No leads distributed</p>
-                ) : (
-                  leads.map((l) => (
-                    <div key={l.identifier} className="bg-slate-50 rounded-xl p-3 flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-slate-900">{l.userName || 'Student'}</p>
-                        <p className="text-xs text-slate-500">{l.userPhone || '—'} • {l.status}</p>
-                      </div>
-                      <span className="text-xs text-slate-400">{formatDate(l.createdAt)}</span>
                     </div>
                   ))
                 )}

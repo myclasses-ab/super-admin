@@ -7,12 +7,9 @@ import AppShell from '@/components/layout/AppShell';
 import PageTransition from '@/components/layout/PageTransition';
 import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
-import LeadsPage from '@/pages/LeadsPage';
-import DistributePage from '@/pages/DistributePage';
 import InstitutesPage from '@/pages/InstitutesPage';
 import CoursesPage from '@/pages/CoursesPage';
 import CreditsPage from '@/pages/CreditsPage';
-import LeadRequestsPage from '@/pages/LeadRequestsPage';
 import FeaturedPurchasesPage from '@/pages/FeaturedPurchasesPage';
 import AnalyticsPage from '@/pages/AnalyticsPage';
 
@@ -75,12 +72,9 @@ function AppRoutes() {
         }
       >
         <Route index element={<PageTransition><DashboardPage /></PageTransition>} />
-        <Route path="leads" element={<PageTransition><LeadsPage /></PageTransition>} />
-        <Route path="distribute" element={<PageTransition><DistributePage /></PageTransition>} />
         <Route path="institutes" element={<PageTransition><InstitutesPage /></PageTransition>} />
         <Route path="courses" element={<PageTransition><CoursesPage /></PageTransition>} />
         <Route path="credits" element={<PageTransition><CreditsPage /></PageTransition>} />
-        <Route path="lead-requests" element={<PageTransition><LeadRequestsPage /></PageTransition>} />
         <Route path="featured-purchases" element={<PageTransition><FeaturedPurchasesPage /></PageTransition>} />
         <Route path="analytics" element={<PageTransition><AnalyticsPage /></PageTransition>} />
       </Route>
