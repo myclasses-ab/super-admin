@@ -168,7 +168,7 @@ export interface Faculty {
   identifier: string;
   instituteIdentifier: string;
   name: string;
-  designation: string;
+  subject: string;
   qualification: string;
   experienceYears: number;
   email: string;

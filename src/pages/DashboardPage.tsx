@@ -102,7 +102,7 @@ export default function DashboardPage() {
 
   const inquiriesByDate = last30Days.map((date) => ({
     date: new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
-    count: inquiries.filter((l) => l.createdAt.startsWith(date)).length,
+    count: inquiries.filter((l) => l.createdAt?.startsWith(date)).length,
   }));
 
   // Inquiries by source (top 10)
