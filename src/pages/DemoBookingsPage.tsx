@@ -6,7 +6,7 @@ import DataTable from '@/components/shared/DataTable';
 import EmptyState from '@/components/shared/EmptyState';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { ActivityActionType, type ActivityLog, type Institute } from '@/types';
-import { ArrowLeft, Calendar, ChevronRight, Phone, Search, User } from 'lucide-react';
+import { ArrowLeft, Calendar, ChevronRight, Phone, Search, Send, User } from 'lucide-react';
 
 interface DemoRow extends ActivityLog {
   instituteName: string;
@@ -16,6 +16,10 @@ function getMetadataValue(log: ActivityLog, key: string): string | undefined {
   if (!log.metadata || typeof log.metadata !== 'object') return undefined;
   const value = (log.metadata as Record<string, unknown>)[key];
   return typeof value === 'string' ? value : undefined;
+}
+
+function getRowLabel(actionType: ActivityActionType): string {
+  return actionType === ActivityActionType.BOOKED_DEMO ? 'Demo Booking' : 'Inquiry';
 }
 
 export default function DemoBookingsPage() {
@@ -29,14 +33,17 @@ export default function DemoBookingsPage() {
     const load = async () => {
       setLoading(true);
       try {
-        const [page, i] = await Promise.all([
+        const [demos, inquiries, i] = await Promise.all([
           activityLogsApi.search({ actionType: ActivityActionType.BOOKED_DEMO, size: 1000 }).catch(() => null),
+          activityLogsApi.search({ actionType: ActivityActionType.SUBMITTED_INQUIRY, size: 1000 }).catch(() => null),
           institutesApi.getAll().catch(() => []),
         ]);
-        setLogs(page?.content ?? []);
+        const merged = [...(demos?.content ?? []), ...(inquiries?.content ?? [])];
+        merged.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setLogs(merged);
         setInstitutes(i ?? []);
       } catch {
-        toast.error('Failed to load demo bookings');
+        toast.error('Failed to load demo bookings and inquiries');
       } finally {
         setLoading(false);
       }
@@ -65,10 +72,12 @@ export default function DemoBookingsPage() {
     return rows.filter((r) => {
       const studentName = r.actorName || getMetadataValue(r, 'studentName') || '';
       const phone = getMetadataValue(r, 'phone') || '';
+      const typeLabel = getRowLabel(r.actionType).toLowerCase();
       return (
         studentName.toLowerCase().includes(q) ||
         r.instituteName.toLowerCase().includes(q) ||
-        phone.toLowerCase().includes(q)
+        phone.toLowerCase().includes(q) ||
+        typeLabel.includes(q)
       );
     });
   }, [rows, search]);
@@ -76,14 +85,33 @@ export default function DemoBookingsPage() {
   const columns = useMemo(
     () => [
       {
+        accessorKey: 'actionType',
+        header: 'Type',
+        cell: ({ row }: { row: { original: DemoRow } }) => {
+          const isDemo = row.original.actionType === ActivityActionType.BOOKED_DEMO;
+          return (
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                isDemo ? 'bg-violet-50 text-violet-700' : 'bg-blue-50 text-blue-700'
+              }`}
+            >
+              {isDemo ? <Calendar size={12} /> : <Send size={12} />}
+              {getRowLabel(row.original.actionType)}
+            </span>
+          );
+        },
+      },
+      {
         accessorKey: 'actorName',
-        header: 'Booked By',
+        header: 'By',
         cell: ({ row }: { row: { original: DemoRow } }) => (
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
               <User size={14} className="text-emerald-600" />
             </div>
-            <span className="font-medium text-slate-900">{row.original.actorName || 'Unknown'}</span>
+            <span className="font-medium text-slate-900">
+              {row.original.actorName || getMetadataValue(row.original, 'studentName') || 'Unknown'}
+            </span>
           </div>
         ),
       },
@@ -109,7 +137,7 @@ export default function DemoBookingsPage() {
       },
       {
         accessorKey: 'createdAt',
-        header: 'Booked On',
+        header: 'Submitted On',
         cell: ({ row }: { row: { original: DemoRow } }) => (
           <span className="flex items-center gap-1 text-sm text-slate-600">
             <Calendar size={12} />
@@ -161,9 +189,9 @@ export default function DemoBookingsPage() {
       </button>
 
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-slate-900">Demo Bookings</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Demo Bookings & Inquiries</h1>
         <p className="text-sm text-slate-500">
-          Every demo booking logged across the platform.
+          Every demo booking and inquiry logged across the platform.
         </p>
       </div>
 
@@ -172,7 +200,7 @@ export default function DemoBookingsPage() {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by student, institute, phone..."
+            placeholder="Search by student, institute, phone, type..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -183,8 +211,8 @@ export default function DemoBookingsPage() {
       {filtered.length === 0 ? (
         <EmptyState
           icon={Calendar}
-          title="No demo bookings found"
-          description={search ? 'Try a different search term' : 'No demo bookings have been logged yet'}
+          title="No demo bookings or inquiries found"
+          description={search ? 'Try a different search term' : 'No demo bookings or inquiries have been logged yet'}
         />
       ) : (
         <DataTable data={filtered} columns={columns} pageSize={20} />

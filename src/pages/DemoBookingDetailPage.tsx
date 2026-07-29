@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { activityLogsApi, institutesApi, usersApi } from '@/api';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import type { ActivityLog, Institute, User } from '@/types';
+import { ActivityActionType, type ActivityLog, type Institute, type User } from '@/types';
 import {
   ArrowLeft,
   Calendar,
@@ -64,7 +64,7 @@ export default function DemoBookingDetailPage() {
         setInstitute(inst);
         setUser(usr);
       } catch {
-        toast.error('Failed to load demo booking details');
+        toast.error('Failed to load details');
       } finally {
         setLoading(false);
       }
@@ -91,7 +91,7 @@ export default function DemoBookingDetailPage() {
           Back to Demo Bookings
         </button>
         <div className="mt-6 bg-white rounded-2xl border border-slate-200 p-8 text-center">
-          <p className="text-slate-600">Demo booking not found.</p>
+          <p className="text-slate-600">Demo booking or inquiry not found.</p>
         </div>
       </div>
     );
@@ -111,6 +111,9 @@ export default function DemoBookingDetailPage() {
   const phone = getMetadataValue(log, 'phone');
   const standard = getMetadataValue(log, 'standard');
   const targetExam = getMetadataValue(log, 'targetExam');
+  const isDemo = log.actionType === ActivityActionType.BOOKED_DEMO;
+  const pageTitle = isDemo ? 'Demo Booking' : 'Inquiry';
+  const submittedAtLabel = isDemo ? 'Booked on' : 'Submitted on';
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4 sm:px-6 space-y-5">
@@ -124,12 +127,18 @@ export default function DemoBookingDetailPage() {
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-violet-50 flex items-center justify-center shrink-0">
-            <Calendar size={28} className="text-violet-600" />
+          <div
+            className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${
+              isDemo ? 'bg-violet-50' : 'bg-blue-50'
+            }`}
+          >
+            <Calendar size={28} className={isDemo ? 'text-violet-600' : 'text-blue-600'} />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Demo Booking</h1>
-            <p className="text-sm text-slate-500 mt-1">Booked on {bookedAt}</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{pageTitle}</h1>
+            <p className="text-sm text-slate-500 mt-1">
+              {submittedAtLabel} {bookedAt}
+            </p>
           </div>
         </div>
       </div>
@@ -166,7 +175,7 @@ export default function DemoBookingDetailPage() {
           icon={School}
         />
         <DetailItem
-          label="Booked At"
+          label={isDemo ? 'Booked At' : 'Submitted At'}
           value={bookedAt}
           icon={Calendar}
         />
