@@ -368,7 +368,7 @@ function ActivityFeedWidget({ logs }: { logs: ActivityLog[] }) {
           onClick={() => navigate('/activity-logs')}
           className="text-xs text-primary-600 hover:underline inline-flex items-center gap-0.5"
         >
-          View all <ArrowRight size={12} />
+          Browse activity <ArrowRight size={12} />
         </button>
       </div>
 

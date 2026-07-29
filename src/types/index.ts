@@ -516,6 +516,20 @@ export interface ActivityLogSearchParams {
   search?: string;
 }
 
+export interface InstituteActivitySummary {
+  identifier: string;
+  name: string | null;
+  eventCount: number;
+  lastActiveAt: string;
+}
+
+export interface StudentActivitySummary {
+  identifier: string;
+  name: string;
+  eventCount: number;
+  lastActiveAt: string;
+}
+
 export interface TopActor {
   identifier: string;
   name: string;

@@ -4,6 +4,8 @@ import type {
   ActivityLogPageResponse,
   ActivityLogSearchParams,
   ActivityLogStatsResponse,
+  InstituteActivitySummary,
+  StudentActivitySummary,
 } from '@/types';
 
 export const activityLogsApi = {
@@ -41,6 +43,16 @@ export const activityLogsApi = {
 
   getStats: async (): Promise<ActivityLogStatsResponse> => {
     const response = await axios.get<ActivityLogStatsResponse>('/activity-logs/stats');
+    return response.data;
+  },
+
+  getInstituteSummaries: async (): Promise<InstituteActivitySummary[]> => {
+    const response = await axios.get<InstituteActivitySummary[]>('/activity-logs/institutes/summary');
+    return response.data;
+  },
+
+  getStudentSummaries: async (): Promise<StudentActivitySummary[]> => {
+    const response = await axios.get<StudentActivitySummary[]>('/activity-logs/students/summary');
     return response.data;
   },
 };

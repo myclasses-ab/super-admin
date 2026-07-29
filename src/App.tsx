@@ -15,6 +15,10 @@ import AnalyticsPage from '@/pages/AnalyticsPage';
 import ActivityLogsPage from '@/pages/ActivityLogsPage';
 import StudentActivityPage from '@/pages/StudentActivityPage';
 import InstituteActivityPage from '@/pages/InstituteActivityPage';
+import InstituteActivityListPage from '@/pages/InstituteActivityListPage';
+import StudentActivityListPage from '@/pages/StudentActivityListPage';
+import DemoBookingsPage from '@/pages/DemoBookingsPage';
+import DemoBookingDetailPage from '@/pages/DemoBookingDetailPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAdminStore();
@@ -81,8 +85,12 @@ function AppRoutes() {
         <Route path="featured-purchases" element={<PageTransition><FeaturedPurchasesPage /></PageTransition>} />
         <Route path="analytics" element={<PageTransition><AnalyticsPage /></PageTransition>} />
         <Route path="activity-logs" element={<PageTransition><ActivityLogsPage /></PageTransition>} />
+        <Route path="activity-logs/institutes" element={<PageTransition><InstituteActivityListPage /></PageTransition>} />
+        <Route path="activity-logs/students" element={<PageTransition><StudentActivityListPage /></PageTransition>} />
         <Route path="activity-logs/student/:identifier" element={<PageTransition><StudentActivityPage /></PageTransition>} />
         <Route path="activity-logs/institute/:identifier" element={<PageTransition><InstituteActivityPage /></PageTransition>} />
+        <Route path="activity-logs/demos" element={<PageTransition><DemoBookingsPage /></PageTransition>} />
+        <Route path="activity-logs/demos/:identifier" element={<PageTransition><DemoBookingDetailPage /></PageTransition>} />
       </Route>
     </Routes>
   );

@@ -78,11 +78,11 @@ export default function StudentActivityPage() {
   return (
     <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6 space-y-5">
       <button
-        onClick={() => navigate('/activity-logs')}
+        onClick={() => navigate('/activity-logs/students')}
         className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
       >
         <ArrowLeft size={16} />
-        Back to Activity Logs
+        Back to Students
       </button>
 
       {user ? (

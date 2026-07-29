@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { activityLogsApi } from '@/api';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import type { ActivityLogStatsResponse } from '@/types';
-import { Activity, Building2, ChevronRight, Users } from 'lucide-react';
+import { Activity, Building2, Calendar, ChevronRight, Users } from 'lucide-react';
 
 function HubCard({
   title,
@@ -92,7 +92,7 @@ export default function ActivityLogsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         <HubCard
           title="Institute Activity"
           description="Browse all institutes and view their complete activity timeline."
@@ -105,6 +105,12 @@ export default function ActivityLogsPage() {
           icon={Users}
           onClick={() => navigate('/activity-logs/students')}
         />
+        <HubCard
+          title="Demo Bookings"
+          description="See all demo bookings and who booked for which institute."
+          icon={Calendar}
+          onClick={() => navigate('/activity-logs/demos')}
+        />
       </div>
 
       <div className="bg-blue-50 rounded-2xl border border-blue-100 p-5 flex items-start gap-3">
@@ -112,8 +118,8 @@ export default function ActivityLogsPage() {
         <div>
           <p className="text-sm font-medium text-blue-900">Tip</p>
           <p className="text-sm text-blue-700 mt-0.5">
-            Activity is organized around the actor. Select an institute or student from the list
-            above to see everything that happened for that actor.
+            Activity is organized around the actor. Select an institute, student, or demo booking
+            from the list above to see the details.
           </p>
         </div>
       </div>
