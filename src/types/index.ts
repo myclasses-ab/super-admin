@@ -114,6 +114,7 @@ export interface Branch {
   landmark: string;
   cityIdentifier: string;
   cityName: string;
+  serviceCities: string[];
   state: string;
   pincode: string;
   latitude: number | string;
