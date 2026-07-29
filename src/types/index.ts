@@ -390,3 +390,148 @@ export interface CreditTopUpRequest {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum ActivityActorType {
+  STUDENT = 'STUDENT',
+  INSTITUTE_ADMIN = 'INSTITUTE_ADMIN',
+  INSTITUTE_STAFF = 'INSTITUTE_STAFF',
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum ActivityEntityType {
+  USER = 'USER',
+  INSTITUTE = 'INSTITUTE',
+  BRANCH = 'BRANCH',
+  COURSE = 'COURSE',
+  FACULTY = 'FACULTY',
+  RESULT = 'RESULT',
+  REVIEW = 'REVIEW',
+  BOOKMARK = 'BOOKMARK',
+  INQUIRY = 'INQUIRY',
+  FACILITY = 'FACILITY',
+  FAQ = 'FAQ',
+  MEDIA = 'MEDIA',
+  CREDIT = 'CREDIT',
+  CREDIT_TRANSACTION = 'CREDIT_TRANSACTION',
+  FEATURED_PURCHASE = 'FEATURED_PURCHASE',
+  SUBSCRIPTION = 'SUBSCRIPTION',
+  USER_INSTITUTE_ASSOCIATION = 'USER_INSTITUTE_ASSOCIATION',
+}
+
+export enum ActivityActionType {
+  LOGIN = 'LOGIN',
+  LOGIN_OTP = 'LOGIN_OTP',
+  LOGOUT = 'LOGOUT',
+  TOKEN_REFRESH = 'TOKEN_REFRESH',
+  STUDENT_REGISTERED = 'STUDENT_REGISTERED',
+  STUDENT_PROFILE_UPDATED = 'STUDENT_PROFILE_UPDATED',
+  INSTITUTE_CREATED = 'INSTITUTE_CREATED',
+  INSTITUTE_UPDATED = 'INSTITUTE_UPDATED',
+  INSTITUTE_DELETED = 'INSTITUTE_DELETED',
+  INSTITUTE_VERIFIED = 'INSTITUTE_VERIFIED',
+  INSTITUTE_UNVERIFIED = 'INSTITUTE_UNVERIFIED',
+  INSTITUTE_FEATURED = 'INSTITUTE_FEATURED',
+  INSTITUTE_UNFEATURED = 'INSTITUTE_UNFEATURED',
+  INSTITUTE_ACTIVATED = 'INSTITUTE_ACTIVATED',
+  INSTITUTE_DEACTIVATED = 'INSTITUTE_DEACTIVATED',
+  COURSE_CREATED = 'COURSE_CREATED',
+  COURSE_UPDATED = 'COURSE_UPDATED',
+  COURSE_DELETED = 'COURSE_DELETED',
+  SUBMITTED_INQUIRY = 'SUBMITTED_INQUIRY',
+  BOOKED_DEMO = 'BOOKED_DEMO',
+  UNLOCKED_LEAD = 'UNLOCKED_LEAD',
+  BRANCH_CREATED = 'BRANCH_CREATED',
+  BRANCH_UPDATED = 'BRANCH_UPDATED',
+  BRANCH_DELETED = 'BRANCH_DELETED',
+  FACULTY_CREATED = 'FACULTY_CREATED',
+  FACULTY_UPDATED = 'FACULTY_UPDATED',
+  FACULTY_DELETED = 'FACULTY_DELETED',
+  RESULT_CREATED = 'RESULT_CREATED',
+  RESULT_UPDATED = 'RESULT_UPDATED',
+  RESULT_DELETED = 'RESULT_DELETED',
+  FACILITY_CREATED = 'FACILITY_CREATED',
+  FACILITY_UPDATED = 'FACILITY_UPDATED',
+  FAQ_CREATED = 'FAQ_CREATED',
+  FAQ_UPDATED = 'FAQ_UPDATED',
+  FAQ_DELETED = 'FAQ_DELETED',
+  MEDIA_UPLOADED = 'MEDIA_UPLOADED',
+  MEDIA_DELETED = 'MEDIA_DELETED',
+  SUBMITTED_REVIEW = 'SUBMITTED_REVIEW',
+  REVIEW_VOTED = 'REVIEW_VOTED',
+  BOOKMARKED = 'BOOKMARKED',
+  REMOVED_BOOKMARK = 'REMOVED_BOOKMARK',
+  COMPARED_INSTITUTES = 'COMPARED_INSTITUTES',
+  SEARCHED_INSTITUTES = 'SEARCHED_INSTITUTES',
+  VIEWED_INSTITUTE = 'VIEWED_INSTITUTE',
+  VIEWED_COURSE = 'VIEWED_COURSE',
+  STAFF_ADDED = 'STAFF_ADDED',
+  STAFF_REMOVED = 'STAFF_REMOVED',
+  STAFF_ROLE_CHANGED = 'STAFF_ROLE_CHANGED',
+  CREDITS_GRANTED = 'CREDITS_GRANTED',
+  CREDITS_DEDUCTED = 'CREDITS_DEDUCTED',
+  TOP_UP_REQUESTED = 'TOP_UP_REQUESTED',
+  TOP_UP_APPROVED = 'TOP_UP_APPROVED',
+  TOP_UP_REJECTED = 'TOP_UP_REJECTED',
+  FEATURED_PURCHASED = 'FEATURED_PURCHASED',
+  SUBSCRIPTION_CHANGED = 'SUBSCRIPTION_CHANGED',
+}
+
+export interface ActivityLog {
+  identifier: string;
+  actorType: ActivityActorType;
+  actorIdentifier: string;
+  actorName: string;
+  actionType: ActivityActionType;
+  entityType: ActivityEntityType;
+  entityIdentifier: string;
+  entityName: string;
+  instituteIdentifier: string;
+  description: string;
+  oldValue: string | null;
+  newValue: string | null;
+  metadata: Record<string, unknown> | null;
+  source: string;
+  createdAt: string;
+}
+
+export interface ActivityLogPageResponse {
+  content: ActivityLog[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface ActivityLogSearchParams {
+  page?: number;
+  size?: number;
+  actorType?: ActivityActorType;
+  actionType?: ActivityActionType;
+  entityType?: ActivityEntityType;
+  actorIdentifier?: string;
+  instituteIdentifier?: string;
+  fromDate?: string;
+  toDate?: string;
+  search?: string;
+}
+
+export interface TopActor {
+  identifier: string;
+  name: string;
+  count: number;
+}
+
+export interface ActionCount {
+  actionType: ActivityActionType;
+  count: number;
+}
+
+export interface ActivityLogStatsResponse {
+  totalToday: number;
+  totalWeek: number;
+  totalMonth: number;
+  topStudents: TopActor[];
+  topInstitutes: TopActor[];
+  actionCounts: ActionCount[];
+}

@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Coins,
   Sparkles,
+  Activity,
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +21,7 @@ const navItems = [
   { label: 'Credits', icon: Coins, path: '/credits' },
   { label: 'Featured', icon: Sparkles, path: '/featured-purchases' },
   { label: 'Analytics', icon: BarChart3, path: '/analytics' },
+  { label: 'Activity Logs', icon: Activity, path: '/activity-logs' },
 ];
 
 export default function Sidebar() {

@@ -4,8 +4,8 @@ import { useAdminStore } from '@/store/adminStore';
 import StatCard from '@/components/shared/StatCard';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import EmptyState from '@/components/shared/EmptyState';
-import { inquiryApi, institutesApi, creditsApi, featuredPurchasesApi, creditTopUpsApi } from '@/api';
-import type { Inquiry, Institute, InstituteCredit, FeaturedPurchase, CreditTopUpRequest } from '@/types';
+import { inquiryApi, institutesApi, creditsApi, featuredPurchasesApi, creditTopUpsApi, activityLogsApi } from '@/api';
+import type { Inquiry, Institute, InstituteCredit, FeaturedPurchase, CreditTopUpRequest, ActivityLog, ActivityLogStatsResponse } from '@/types';
 import { toast } from 'sonner';
 import {
   Users,
@@ -17,6 +17,8 @@ import {
   Coins,
   Sparkles,
   IndianRupee,
+  Activity,
+  Clock,
 } from 'lucide-react';
 import {
   LineChart,
@@ -32,6 +34,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { getActionIcon, relativeTime } from '@/components/activity/activity-log-helpers';
 
 const COLORS = ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff'];
 
@@ -44,10 +47,14 @@ export default function DashboardPage() {
   const [creditBalances, setCreditBalances] = useState<InstituteCredit[]>([]);
   const [featuredPurchases, setFeaturedPurchases] = useState<FeaturedPurchase[]>([]);
   const [creditTopUps, setCreditTopUps] = useState<CreditTopUpRequest[]>([]);
+  const [activityStats, setActivityStats] = useState<ActivityLogStatsResponse | null>(null);
+  const [recentActivity, setRecentActivity] = useState<ActivityLog[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       setIsLoading(true);
+      setActivityLoading(true);
       try {
         const [inq, i, fp, ctu] = await Promise.all([
           inquiryApi.getAll(),
@@ -78,6 +85,20 @@ export default function DashboardPage() {
         toast.error('Failed to load dashboard data');
       } finally {
         setIsLoading(false);
+      }
+
+      try {
+        const [stats, page] = await Promise.all([
+          activityLogsApi.getStats(),
+          activityLogsApi.search({ size: 10 }),
+        ]);
+        setActivityStats(stats);
+        setRecentActivity(page.content);
+      } catch (err) {
+        console.error('Activity stats load error', err);
+        toast.error('Failed to load activity data');
+      } finally {
+        setActivityLoading(false);
       }
     };
     load();
@@ -297,6 +318,156 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Activity Widgets */}
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold text-slate-900">Platform Activity</h2>
+
+        {activityLoading ? (
+          <div className="flex items-center justify-center h-48">
+            <LoadingSpinner size="lg" />
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <StatCard title="Events Today" value={activityStats?.totalToday ?? 0} icon={Activity} />
+              <StatCard title="Events This Week" value={activityStats?.totalWeek ?? 0} icon={Clock} />
+              <StatCard title="Events This Month" value={activityStats?.totalMonth ?? 0} icon={TrendingUp} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <ActivityFeedWidget logs={recentActivity} />
+              <TopActorsWidget
+                title="Top Active Students"
+                actors={activityStats?.topStudents ?? []}
+                type="student"
+              />
+              <TopActorsWidget
+                title="Top Active Institutes"
+                actors={activityStats?.topInstitutes ?? []}
+                type="institute"
+              />
+            </div>
+
+            <ActionDistributionWidget actionCounts={activityStats?.actionCounts ?? []} />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ActivityFeedWidget({ logs }: { logs: ActivityLog[] }) {
+  const navigate = useNavigate();
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-base font-semibold text-slate-900">Recent Activity</h3>
+        <button
+          onClick={() => navigate('/activity-logs')}
+          className="text-xs text-primary-600 hover:underline inline-flex items-center gap-0.5"
+        >
+          View all <ArrowRight size={12} />
+        </button>
+      </div>
+
+      {logs.length === 0 ? (
+        <EmptyState icon={Activity} title="No recent activity" description="Activity will appear here" className="py-6" />
+      ) : (
+        <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+          {logs.map((log) => {
+            const Icon = getActionIcon(log.actionType);
+            return (
+              <div key={log.identifier} className="flex items-start gap-3 p-3 rounded-xl bg-slate-50">
+                <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                  <Icon size={14} className="text-slate-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-slate-800 truncate">{log.description || log.actionType.replace(/_/g, ' ')}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {log.actorName || log.actorType.replace(/_/g, ' ')} · {relativeTime(log.createdAt)}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TopActorsWidget({
+  title,
+  actors,
+  type,
+}: {
+  title: string;
+  actors: { identifier: string; name: string; count: number }[];
+  type: 'student' | 'institute';
+}) {
+  const navigate = useNavigate();
+  const max = Math.max(...actors.map((a) => a.count), 1);
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <h3 className="text-base font-semibold text-slate-900 mb-4">{title}</h3>
+      {actors.length === 0 ? (
+        <EmptyState icon={Users} title="No data" description="Activity will appear here" className="py-6" />
+      ) : (
+        <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+          {actors.map((actor) => (
+            <button
+              key={actor.identifier}
+              onClick={() => navigate(`/activity-logs/${type}/${actor.identifier}`)}
+              className="w-full text-left group"
+            >
+              <div className="flex items-center justify-between text-sm mb-1">
+                <span className="font-medium text-slate-700 truncate max-w-[70%] group-hover:text-primary-600">
+                  {actor.name || actor.identifier}
+                </span>
+                <span className="text-slate-500">{actor.count}</span>
+              </div>
+              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary-500 rounded-full transition-all"
+                  style={{ width: `${(actor.count / max) * 100}%` }}
+                />
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ActionDistributionWidget({ actionCounts }: { actionCounts: { actionType: string; count: number }[] }) {
+  const data = actionCounts
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8)
+    .map((ac) => ({ name: ac.actionType.replace(/_/g, ' '), value: ac.count }));
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <h3 className="text-base font-semibold text-slate-900 mb-4">Activity by Action Type</h3>
+      {data.length === 0 ? (
+        <EmptyState icon={Activity} title="No data" description="Activity will appear here" className="py-8" />
+      ) : (
+        <div className="h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label>
+                {data.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 }

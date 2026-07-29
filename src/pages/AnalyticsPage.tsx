@@ -55,7 +55,7 @@ export default function AnalyticsPage() {
 
   const inquiriesByDate = last30Days.map((date) => ({
     date: new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
-    count: inquiries.filter((l) => l.createdAt.startsWith(date)).length,
+    count: inquiries.filter((l) => l.createdAt?.startsWith(date)).length,
   }));
 
   // Top target exams as proxy for interest areas

@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAdminStore } from '@/store/adminStore';
 import DataTable from '@/components/shared/DataTable';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
@@ -9,9 +10,10 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { institutesApi, masterApi } from '@/api';
 import type { Institute } from '@/types';
 import { toast } from 'sonner';
-import { Building2, Trash2, Eye } from 'lucide-react';
+import { Activity, Building2, Trash2, Eye } from 'lucide-react';
 
 export default function InstitutesPage() {
+  const navigate = useNavigate();
   const { institutes, setInstitutes, instituteFilters, setCities } = useAdminStore();
   const [isLoading, setIsLoading] = useState(true);
   const [detailInstitute, setDetailInstitute] = useState<Institute | null>(null);
@@ -138,6 +140,13 @@ export default function InstitutesPage() {
               title="View"
             >
               <Eye size={16} />
+            </button>
+            <button
+              onClick={() => navigate(`/activity-logs/institute/${row.original.identifier}`)}
+              className="p-1.5 rounded-lg hover:bg-primary-50 text-primary-600"
+              title="Activity"
+            >
+              <Activity size={16} />
             </button>
             <button
               onClick={() => setDeleteTarget(row.original)}

@@ -20,6 +20,7 @@ const mobileItems = [
 const moreItems = [
   { label: 'Courses', path: '/courses' },
   { label: 'Analytics', path: '/analytics' },
+  { label: 'Activity Logs', path: '/activity-logs' },
 ];
 
 export default function MobileNav() {
@@ -109,6 +110,7 @@ export default function MobileNav() {
                 { label: 'Institutes', path: '/institutes' },
                 { label: 'Courses', path: '/courses' },
                 { label: 'Analytics', path: '/analytics' },
+                { label: 'Activity Logs', path: '/activity-logs' },
               ].map((item) => (
                 <button
                   key={item.path}

@@ -12,6 +12,9 @@ import CoursesPage from '@/pages/CoursesPage';
 import CreditsPage from '@/pages/CreditsPage';
 import FeaturedPurchasesPage from '@/pages/FeaturedPurchasesPage';
 import AnalyticsPage from '@/pages/AnalyticsPage';
+import ActivityLogsPage from '@/pages/ActivityLogsPage';
+import StudentActivityPage from '@/pages/StudentActivityPage';
+import InstituteActivityPage from '@/pages/InstituteActivityPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAdminStore();
@@ -77,6 +80,9 @@ function AppRoutes() {
         <Route path="credits" element={<PageTransition><CreditsPage /></PageTransition>} />
         <Route path="featured-purchases" element={<PageTransition><FeaturedPurchasesPage /></PageTransition>} />
         <Route path="analytics" element={<PageTransition><AnalyticsPage /></PageTransition>} />
+        <Route path="activity-logs" element={<PageTransition><ActivityLogsPage /></PageTransition>} />
+        <Route path="activity-logs/student/:identifier" element={<PageTransition><StudentActivityPage /></PageTransition>} />
+        <Route path="activity-logs/institute/:identifier" element={<PageTransition><InstituteActivityPage /></PageTransition>} />
       </Route>
     </Routes>
   );
