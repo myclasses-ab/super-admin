@@ -3,6 +3,7 @@ import { useAdminStore } from '@/store/adminStore';
 import { cn } from '@/lib/utils';
 import { Bell, LogOut, Menu, User, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import logo from '@/assets/logo.svg';
 
 export default function TopHeader() {
   const { user, logout, sidebarCollapsed, setMobileNavOpen } = useAdminStore();
@@ -23,8 +24,13 @@ export default function TopHeader() {
         >
           <Menu size={20} />
         </button>
+        <img
+          src={logo}
+          alt="MyClasses"
+          className="h-8 w-auto object-contain"
+        />
         <div>
-          <h1 className="text-sm font-semibold text-slate-900 truncate max-w-[200px] sm:max-w-md">
+          <h1 className="text-sm font-semibold text-slate-900 truncate max-w-[160px] sm:max-w-md">
             Super Admin Dashboard
           </h1>
           <p className="text-xs text-slate-500 hidden sm:block">
