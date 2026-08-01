@@ -13,6 +13,7 @@ export interface User {
   role: UserRole;
   currentStandard: Standard;
   targetExamIdentifiers: string[];
+  bookedDemoCourseIdentifiers?: string[];
   searchedCities: string[];
   searchedExams: string[];
   visitedInstituteIdentifiers: string[];
