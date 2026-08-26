@@ -12,6 +12,7 @@ import {
   Coins,
   Sparkles,
   Activity,
+  MapPin,
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
   { label: 'Featured', icon: Sparkles, path: '/featured-purchases' },
   { label: 'Analytics', icon: BarChart3, path: '/analytics' },
   { label: 'Activity', icon: Activity, path: '/activity-logs' },
+  { label: 'Coord Failures', icon: MapPin, path: '/branch-coordinate-failures' },
 ];
 
 export default function Sidebar() {

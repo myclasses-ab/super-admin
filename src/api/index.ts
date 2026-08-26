@@ -9,3 +9,4 @@ export { featuredPurchasesApi } from './featured-purchases';
 export { creditTopUpsApi, type ApproveCreditTopUpPayload } from './credit-top-ups';
 export { activityLogsApi } from './activity-logs';
 export { usersApi } from './users';
+export { branchesApi } from './branches';

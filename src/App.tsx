@@ -19,6 +19,7 @@ import InstituteActivityListPage from '@/pages/InstituteActivityListPage';
 import StudentActivityListPage from '@/pages/StudentActivityListPage';
 import DemoBookingsPage from '@/pages/DemoBookingsPage';
 import DemoBookingDetailPage from '@/pages/DemoBookingDetailPage';
+import BranchCoordinatesPage from '@/pages/BranchCoordinatesPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAdminStore();
@@ -91,6 +92,7 @@ function AppRoutes() {
         <Route path="activity-logs/institute/:identifier" element={<PageTransition><InstituteActivityPage /></PageTransition>} />
         <Route path="activity-logs/demos" element={<PageTransition><DemoBookingsPage /></PageTransition>} />
         <Route path="activity-logs/demos/:identifier" element={<PageTransition><DemoBookingDetailPage /></PageTransition>} />
+        <Route path="branch-coordinate-failures" element={<PageTransition><BranchCoordinatesPage /></PageTransition>} />
       </Route>
     </Routes>
   );
